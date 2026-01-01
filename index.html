@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Happy New Year Mahesh!</title>
+    <style>
+        /* Import Tech/Futuristic Fonts */
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;600;700&display=swap');
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            /* Deep Space / Cyberpunk Background */
+            background: radial-gradient(circle at center, #1a1a2e 0%, #000000 100%);
+            font-family: 'Rajdhani', sans-serif;
+            color: white;
+            user-select: none;
+            transition: background 2s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Canvas Layers */
+        #starCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 0;
+        }
+        #fireworksCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+            filter: drop-shadow(0 0 8px rgba(0, 243, 255, 0.5)); /* Neon Glow */
+        }
+
+        /* Content Overlay */
+        .container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+            width: 90%;
+            max-width: 600px;
+            perspective: 1000px;
+            transition: all 1s ease;
+        }
+
+        /* Glassmorphism Card - Dark/Tech Style */
+        .card {
+            background: rgba(10, 10, 20, 0.6);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(0, 243, 255, 0.3); /* Cyan Border */
+            border-radius: 15px;
+            padding: 40px 20px;
+            box-shadow: 0 0 40px rgba(0, 243, 255, 0.1);
+            text-align: center;
+            transform-style: preserve-3d;
+            transition: transform 0.1s, opacity 1s ease;
+            min-height: 400px;
+            max-height: 85vh;
+            overflow-y: auto;
+            
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .card::-webkit-scrollbar { display: none; }
+
+        /* Typography */
+        .recipient-label {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.8rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: #00f3ff; /* Neon Cyan */
+            margin-bottom: 15px;
+            text-shadow: 0 0 10px rgba(0, 243, 255, 0.6);
+        }
+
+        h1.greeting {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            font-size: 3rem;
+            margin: 0;
+            /* Gold to Cyan Gradient */
+            background: linear-gradient(to right, #ffd700, #fff, #00f3ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            line-height: 1.1;
+            filter: drop-shadow(0 0 5px rgba(0,243,255,0.5));
+        }
+
+        .year-styled {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 5rem;
+            font-weight: 700;
+            color: #fff;
+            margin: 10px 0;
+            letter-spacing: 5px;
+            text-shadow: 4px 4px 0px #000, 0 0 20px rgba(0, 243, 255, 0.8);
+        }
+
+        /* Countdown Timer */
+        #countdown {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin: 25px 0 15px 0;
+        }
+
+        .time-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px;
+            border-radius: 6px;
+            min-width: 60px;
+            border: 1px solid rgba(0, 243, 255, 0.2);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .time-val {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.6rem;
+            font-weight: bold;
+            color: #ffd700; /* Gold */
+        }
+
+        .time-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 5px;
+            color: #a0a0a0;
+        }
+        
+        #countdownText {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.1rem;
+            color: #00f3ff;
+            margin-bottom: 20px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        /* Button - Neon Style */
+        .btn {
+            display: none;
+            margin-top: 25px;
+            padding: 18px 50px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #000;
+            /* Cyan to Purple Gradient */
+            background: linear-gradient(90deg, #00f3ff 0%, #bc13fe 100%);
+            border: none;
+            clip-path: polygon(10% 0, 100% 0, 100% 80%, 90% 100%, 0 100%, 0 20%); /* Sci-fi Shape */
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 100;
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.4);
+            animation: glitchPulse 2s infinite;
+        }
+
+        @keyframes glitchPulse {
+            0% { transform: scale(1); box-shadow: 0 0 20px rgba(0, 243, 255, 0.4); }
+            50% { transform: scale(1.02); box-shadow: 0 0 35px rgba(188, 19, 254, 0.6); }
+            100% { transform: scale(1); box-shadow: 0 0 20px rgba(0, 243, 255, 0.4); }
+        }
+
+        .btn:hover {
+            animation: none;
+            transform: translateY(-2px);
+            background: linear-gradient(90deg, #fff 0%, #00f3ff 100%);
+            box-shadow: 0 0 50px rgba(0, 243, 255, 0.8);
+        }
+
+        .sender-msg {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+            margin-top: 15px;
+            font-family: 'Rajdhani', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* --- Story Phase Styles --- */
+        #storyArea {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            width: 100%;
+            opacity: 0;
+            transition: opacity 2s ease-in-out; /* Slower fade in */
+        }
+
+        .story-word {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3rem; /* Larger text */
+            font-weight: 900;
+            letter-spacing: 6px; /* More spacing */
+            color: #fff;
+            text-transform: uppercase;
+            animation: textGlitch 5s infinite; /* Slower glitch animation */
+            text-shadow: 2px 2px 0px #bc13fe, -2px -2px 0px #00f3ff;
+        }
+
+        .unity-text {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.6rem; /* Larger text */
+            font-weight: 600;
+            line-height: 1.8; /* Better readability */
+            color: #e0e0e0;
+            max-width: 90%;
+            text-transform: uppercase;
+            border-left: 3px solid #00f3ff; /* Thicker border */
+            padding-left: 20px;
+            letter-spacing: 1px;
+        }
+
+        .final-wish {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(to right, #00f3ff, #bc13fe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-top: 20px;
+            text-shadow: 0 0 20px rgba(0, 243, 255, 0.3);
+        }
+
+        @keyframes textGlitch {
+            0% { transform: skew(0deg); }
+            2% { transform: skew(2deg); }
+            4% { transform: skew(-2deg); }
+            6% { transform: skew(0deg); }
+            100% { transform: skew(0deg); }
+        }
+
+        @media (max-width: 768px) {
+            h1.greeting { font-size: 2.2rem; }
+            .year-styled { font-size: 3.5rem; }
+            .story-word { font-size: 1.8rem; }
+            .unity-text { font-size: 1.1rem; }
+            .card { padding: 30px 15px; border: 1px solid rgba(0, 243, 255, 0.15); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Background Music (Ensure you have a cool track named bgs.mp3) -->
+    <audio id="bgMusic" loop>
+        <source src="bgs.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <canvas id="starCanvas"></canvas>
+    <canvas id="fireworksCanvas"></canvas>
+
+    <div class="container" id="cardContainer">
+        <div class="card" id="tiltCard">
+            <!-- Phase 1: Greeting Area -->
+            <div id="greetingArea">
+                <div class="recipient-label">Incoming Transmission For: <br><span style="font-size:1.4rem; color: #fff;">Mahesh</span></div>
+                <h1 class="greeting">Happy New Year</h1>
+                <div class="year-styled">2026</div>
+                
+                <div id="countdown">
+                    <div class="time-box">
+                        <span class="time-val" id="days">00</span>
+                        <span class="time-label">Days</span>
+                    </div>
+                    <div class="time-box">
+                        <span class="time-val" id="hours">00</span>
+                        <span class="time-label">Hrs</span>
+                    </div>
+                    <div class="time-box">
+                        <span class="time-val" id="minutes">00</span>
+                        <span class="time-label">Min</span>
+                    </div>
+                    <div class="time-box">
+                        <span class="time-val" id="seconds">00</span>
+                        <span class="time-label">Sec</span>
+                    </div>
+                </div>
+                
+                <div id="countdownText">System Loading...</div>
+                
+                <p class="sender-msg" id="waitMessage">
+                    Syncing timeline...<br>
+                    <span style="font-size: 0.8em; color: #00f3ff;">(Await Launch Sequence)</span>
+                </p>
+
+                <!-- Button will appear only when countdown ends -->
+                <button class="btn" id="celebrateBtn" onclick="startJourney()">Launch Protocol</button>
+            </div>
+
+            <!-- Phase 2-5: Story Area -->
+            <div id="storyArea">
+                <div id="storyContent"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Music Logic ---
+        window.addEventListener('load', function() {
+            var audio = document.getElementById("bgMusic");
+            audio.volume = 0.6; 
+            var playPromise = audio.play();
+            if (playPromise !== undefined) {
+                playPromise.catch(error => {
+                    document.body.addEventListener('click', function() {
+                        audio.play();
+                    }, { once: true });
+                });
+            }
+        });
+
+        // --- Optimization Logic (Mobile Check) ---
+        const isMobile = window.innerWidth < 768;
+        
+        // --- 1. Starfield Background (Warp Speed Effect) ---
+        const starCanvas = document.getElementById('starCanvas');
+        const starCtx = starCanvas.getContext('2d');
+        let stars = [];
+
+        function initStars() {
+            starCanvas.width = window.innerWidth;
+            starCanvas.height = window.innerHeight;
+            stars = [];
+            const starCount = isMobile ? 100 : 350;
+            for (let i = 0; i < starCount; i++) {
+                stars.push({
+                    x: Math.random() * starCanvas.width,
+                    y: Math.random() * starCanvas.height,
+                    size: Math.random() * 2,
+                    opacity: Math.random(),
+                    speed: Math.random() * 0.2 + 0.1, // Faster stars for tech vibe
+                    color: Math.random() > 0.9 ? '#00f3ff' : '#FFFFFF' // Occasional blue stars
+                });
+            }
+        }
+
+        function animateStars() {
+            starCtx.clearRect(0, 0, starCanvas.width, starCanvas.height);
+            stars.forEach(star => {
+                star.y += star.speed; // Move down like space travel
+                if(star.y > starCanvas.height) {
+                    star.y = 0;
+                    star.x = Math.random() * starCanvas.width;
+                }
+                
+                star.opacity += (Math.random() - 0.5) * 0.05;
+                if (star.opacity < 0.2) star.opacity = 0.2;
+                if (star.opacity > 1) star.opacity = 1;
+                
+                starCtx.globalAlpha = star.opacity;
+                starCtx.fillStyle = star.color;
+                starCtx.beginPath();
+                starCtx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+                starCtx.fill();
+            });
+            requestAnimationFrame(animateStars);
+        }
+
+        // --- 2. Fireworks System (Neon/Explosive) ---
+        const fCanvas = document.getElementById('fireworksCanvas');
+        const fCtx = fCanvas.getContext('2d');
+        let fWidth, fHeight;
+        let particles = [];
+        let fireworks = [];
+        let unityParticles = []; // repurposed as "Data Bits"
+        
+        let isStoryMode = false;
+        let isUnityMode = false;
+        let fireworkFrequency = isMobile ? 0.03 : 0.05;
+
+        function resizeFireworks() {
+            fWidth = window.innerWidth;
+            fHeight = window.innerHeight;
+            fCanvas.width = fWidth;
+            fCanvas.height = fHeight;
+        }
+
+        // BOYS STYLE PALETTE: Neon Blue, Purple, Green, Gold, White
+        const palette = [
+            { h: 180, s: '100%', l: '50%' }, // Cyan
+            { h: 280, s: '100%', l: '60%' }, // Electric Purple
+            { h: 120, s: '100%', l: '50%' }, // Neon Green
+            { h: 45, s: '100%', l: '50%' },  // Gold
+            { h: 0, s: '0%', l: '100%' }     // Bright White
+        ];
+
+        class Firework {
+            constructor(x, y, targetX, targetY) {
+                this.x = x;
+                this.y = y;
+                this.targetX = targetX;
+                this.targetY = targetY;
+                this.speed = isMobile ? 4 : 5; // Faster rockets
+                this.angle = Math.atan2(targetY - y, targetX - x);
+                this.velocity = {
+                    x: Math.cos(this.angle) * this.speed,
+                    y: Math.sin(this.angle) * this.speed
+                };
+                this.distanceToTarget = Math.hypot(targetX - x, targetY - y);
+                this.distanceTraveled = 0;
+                this.colorConfig = palette[Math.floor(Math.random() * palette.length)];
+            }
+
+            update() {
+                this.x += this.velocity.x;
+                this.y += this.velocity.y;
+                this.distanceTraveled += this.speed;
+                fCtx.globalCompositeOperation = 'lighter';
+                fCtx.fillStyle = `hsl(${this.colorConfig.h}, ${this.colorConfig.s}, ${this.colorConfig.l})`;
+                fCtx.beginPath();
+                fCtx.arc(this.x, this.y, 2.5, 0, Math.PI * 2);
+                fCtx.fill();
+                if (this.distanceTraveled >= this.distanceToTarget) {
+                    createParticles(this.targetX, this.targetY, this.colorConfig);
+                    return false;
+                }
+                return true;
+            }
+        }
+
+        class Particle {
+            constructor(x, y, colorConfig) {
+                this.x = x;
+                this.y = y;
+                this.colorConfig = colorConfig;
+                const angle = Math.random() * Math.PI * 2;
+                const speed = Math.random() * 6 + 2; // Explosive speed
+                this.velocity = { x: Math.cos(angle) * speed, y: Math.sin(angle) * speed };
+                this.alpha = 1;
+                this.friction = 0.95;
+                this.gravity = 0.08;
+                this.decay = Math.random() * 0.02 + 0.015; 
+            }
+            update() {
+                this.velocity.x *= this.friction;
+                this.velocity.y *= this.friction;
+                this.velocity.y += this.gravity;
+                this.x += this.velocity.x;
+                this.y += this.velocity.y;
+                this.alpha -= this.decay;
+                return this.alpha > 0;
+            }
+            draw() {
+                fCtx.save();
+                fCtx.globalAlpha = this.alpha;
+                fCtx.fillStyle = `hsl(${this.colorConfig.h}, ${this.colorConfig.s}, ${this.colorConfig.l})`;
+                // Add Glow
+                if(!isMobile) {
+                    fCtx.shadowBlur = 15;
+                    fCtx.shadowColor = `hsl(${this.colorConfig.h}, 100%, 50%)`;
+                }
+                fCtx.beginPath();
+                fCtx.arc(this.x, this.y, isMobile ? 1.5 : 3, 0, Math.PI * 2);
+                fCtx.fill();
+                fCtx.restore();
+            }
+        }
+
+        // Repurposed as Floating Data Bits / Squares
+        class UnityParticle {
+            constructor() {
+                this.x = Math.random() * fWidth;
+                this.y = fHeight + 10;
+                this.speed = Math.random() * 3 + 1;
+                this.size = Math.random() * 4 + 1;
+                this.color = Math.random() > 0.5 ? '#00f3ff' : '#bc13fe';
+            }
+            update() {
+                this.y -= this.speed;
+                // Jitter x
+                this.x += Math.sin(Date.now() * 0.005) * 0.5;
+            }
+            draw() {
+                fCtx.fillStyle = this.color;
+                fCtx.globalAlpha = 0.4;
+                fCtx.fillRect(this.x, this.y, this.size, this.size); // Squares for tech vibe
+            }
+        }
+
+        function createParticles(x, y, colorConfig) {
+            const count = isMobile ? 40 : 100;
+            for (let i = 0; i < count; i++) {
+                particles.push(new Particle(x, y, colorConfig));
+            }
+        }
+
+        function loopFireworks() {
+            fCtx.globalCompositeOperation = 'destination-out';
+            fCtx.fillStyle = 'rgba(0, 0, 0, 0.2)'; 
+            fCtx.fillRect(0, 0, fWidth, fHeight);
+            
+            if (!isStoryMode || (isStoryMode && Math.random() < 0.02)) {
+                for (let i = fireworks.length - 1; i >= 0; i--) {
+                    if (!fireworks[i].update()) fireworks.splice(i, 1);
+                }
+                for (let i = particles.length - 1; i >= 0; i--) {
+                    particles[i].update();
+                    particles[i].draw();
+                    if (particles[i].alpha <= 0) particles.splice(i, 1);
+                }
+                
+                if (Math.random() < fireworkFrequency) {
+                    const startX = Math.random() * fWidth;
+                    const targetX = Math.random() * fWidth;
+                    const targetY = Math.random() * (fHeight * 0.5);
+                    fireworks.push(new Firework(startX, fHeight, targetX, targetY));
+                }
+            }
+
+            if (isUnityMode) {
+                const limit = isMobile ? 50 : 100;
+                if (unityParticles.length < limit && Math.random() < 0.1) unityParticles.push(new UnityParticle());
+                for (let i = unityParticles.length - 1; i >= 0; i--) {
+                    unityParticles[i].update();
+                    unityParticles[i].draw();
+                    if(unityParticles[i].y < -10) unityParticles.splice(i, 1);
+                }
+            }
+
+            requestAnimationFrame(loopFireworks);
+        }
+
+        // --- 3. Journey & Logic ---
+        const nextYear = 2026;
+        const targetDate = new Date(`January 1, ${nextYear} 00:00:00`).getTime();
+        
+        const celebrateBtn = document.getElementById('celebrateBtn');
+        const countdownBox = document.getElementById('countdown');
+        const countdownText = document.getElementById('countdownText');
+        const waitMessage = document.getElementById('waitMessage');
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const gap = targetDate - now;
+
+            if (gap <= 0) {
+                // TIME IS UP!
+                countdownBox.style.display = 'none';
+                countdownText.style.display = 'none';
+                waitMessage.style.display = 'none';
+                
+                // Show Button
+                celebrateBtn.style.display = 'block';
+                
+                // Show Header Text
+                document.querySelector('.year-styled').innerText = "SYSTEM READY";
+                document.querySelector('.year-styled').style.fontSize = "3rem";
+                return;
+            }
+
+            // Normal Countdown
+            const d = Math.floor(gap / (1000 * 60 * 60 * 24));
+            const h = Math.floor((gap % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const m = Math.floor((gap % (1000 * 60 * 60)) / (1000 * 60));
+            const s = Math.floor((gap % (1000 * 60)) / 1000);
+
+            document.getElementById('days').innerText = d < 10 ? '0' + d : d;
+            document.getElementById('hours').innerText = h < 10 ? '0' + h : h;
+            document.getElementById('minutes').innerText = m < 10 ? '0' + m : m;
+            document.getElementById('seconds').innerText = s < 10 ? '0' + s : s;
+            
+            let textStr = "";
+            textStr += `T-Minus: ${d}d ${h}h ${m}m ${s}s`;
+            countdownText.innerText = textStr;
+        }
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+
+        // 3D Tilt Logic
+        const container = document.getElementById('cardContainer');
+        const card = document.getElementById('tiltCard');
+        container.addEventListener('mousemove', (e) => {
+            if(isStoryMode || isMobile) return; 
+            const xAxis = (window.innerWidth / 2 - e.pageX) / 25;
+            const yAxis = (window.innerHeight / 2 - e.pageY) / 25;
+            card.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
+        });
+        container.addEventListener('mouseleave', () => {
+             card.style.transform = `rotateY(0deg) rotateX(0deg)`;
+        });
+
+        // --- THE JOURNEY ---
+        function startJourney() {
+            // Intense Boom
+            for(let i=0; i<8; i++) {
+                setTimeout(() => {
+                    const x = Math.random() * fWidth;
+                    fireworks.push(new Firework(fWidth/2, fHeight, x, fHeight * 0.3));
+                }, i * 150);
+            }
+
+            const greetingArea = document.getElementById('greetingArea');
+            const storyArea = document.getElementById('storyArea');
+            
+            greetingArea.style.opacity = '0';
+            setTimeout(() => {
+                greetingArea.style.display = 'none';
+                storyArea.style.display = 'flex';
+                void storyArea.offsetWidth;
+                storyArea.style.opacity = '1';
+                
+                // Darker background shift
+                document.body.style.background = 'radial-gradient(circle at center, #10002b 0%, #000000 100%)';
+                isStoryMode = true;
+                fireworkFrequency = 0.00;
+                
+                runStorySequence();
+            }, 800);
+        }
+
+        async function runStorySequence() {
+            const content = document.getElementById('storyContent');
+            
+            const showText = (html, duration) => {
+                return new Promise(resolve => {
+                    content.style.opacity = '0';
+                    setTimeout(() => {
+                        content.innerHTML = html;
+                        content.style.opacity = '1';
+                        content.style.transition = 'opacity 1.5s ease'; // Slower fade transition
+                        setTimeout(() => {
+                            if (duration > 0) {
+                                content.style.opacity = '0';
+                                setTimeout(resolve, 1500); // Wait for fade out
+                            } else {
+                                resolve();
+                            }
+                        }, duration);
+                    }, 500);
+                });
+            };
+
+            // Aggressive / Motivational Words - Slower pacing (3s each)
+            await showText('<div class="story-word" style="color:#ffd700;">POWER</div>', 3000);
+            await showText('<div class="story-word" style="color:#00f3ff;">SUCCESS</div>', 3000);
+            await showText('<div class="story-word" style="color:#bc13fe;">VICTORY</div>', 3000);
+
+            isUnityMode = true;
+            // Longer duration for main message (5s)
+            await showText(`
+                <div class="unity-text">
+                    Mahesh,<br>
+                    It's time to level up.<br>
+                    <span style="color:#00f3ff">No limits. No excuses.</span>
+                </div>
+            `, 5000);
+
+            // The Roast: Status Check - Much longer duration for reading (7s)
+            await showText(`
+                <div class="unity-text" style="border-left: 3px solid #ff0055;">
+                    SYSTEM DIAGNOSTIC:<br><br>
+                    CAREER: <span style="color:#00f3ff">LOADING...</span><br>
+                    GIRLFRIEND: <span style="color:#ff0055">404 NOT FOUND</span><br>
+                    <span style="font-size: 1rem; color: #aaa; text-transform: none;">(Yep, still single this year too)</span>
+                </div>
+            `, 7000);
+
+            isUnityMode = false;
+            fireworkFrequency = isMobile ? 0.03 : 0.06;
+            
+            // FINAL PAGE
+            const finalHTML = `
+                <div class="unity-text">
+                    Make 2026 the year they remember your name.<br>
+                    Let's crush it, Brother.
+                </div>
+                <div class="final-wish">HAPPY NEW YEAR</div>
+                <div style="font-family: 'Rajdhani'; font-size:1.4rem; color: #ffd700; margin-top:20px; letter-spacing:3px; font-weight:bold;">- SAHIL</div>
+                <br>
+                <div style="font-size: 0.8rem; color: #666; font-family:'Rajdhani'; text-transform:uppercase;">(Tap screen to restart audio)</div>
+            `;
+            
+            content.innerHTML = finalHTML;
+            content.style.opacity = '1';
+        }
+
+        window.addEventListener('resize', () => { initStars(); resizeFireworks(); });
+        initStars();
+        animateStars();
+        resizeFireworks();
+        loopFireworks();
+
+    </script>
+</body>
+</html>
