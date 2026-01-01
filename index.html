@@ -53,7 +53,7 @@
 
         /* Glassmorphism Card - Dark/Tech Style */
         .card {
-            background: rgba(10, 10, 20, 0.6);
+            background: rgba(10, 10, 20, 0.7); /* Slightly darker for better readability on mobile */
             backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px);
             border: 1px solid rgba(0, 243, 255, 0.3); /* Cyan Border */
@@ -116,6 +116,7 @@
             justify-content: center;
             gap: 12px;
             margin: 25px 0 15px 0;
+            flex-wrap: wrap; /* Allow wrap on very small screens */
         }
 
         .time-box {
@@ -256,12 +257,76 @@
             100% { transform: skew(0deg); }
         }
 
+        /* --- Mobile Optimization --- */
         @media (max-width: 768px) {
-            h1.greeting { font-size: 2.2rem; }
-            .year-styled { font-size: 3.5rem; }
-            .story-word { font-size: 1.8rem; }
-            .unity-text { font-size: 1.1rem; }
-            .card { padding: 30px 15px; border: 1px solid rgba(0, 243, 255, 0.15); }
+            .container { width: 95%; }
+            .card { 
+                padding: 25px 10px; 
+                min-height: 350px; 
+            }
+            
+            h1.greeting { 
+                font-size: 2rem; 
+                letter-spacing: 1px; 
+                line-height: 1.2;
+            }
+            
+            .year-styled { 
+                font-size: 3.5rem; 
+                letter-spacing: 3px; 
+                margin: 5px 0;
+            }
+            
+            .recipient-label {
+                font-size: 0.7rem;
+                margin-bottom: 10px;
+            }
+
+            /* Compact Countdown */
+            #countdown { 
+                gap: 6px; 
+                margin: 15px 0; 
+            }
+            .time-box { 
+                padding: 6px 4px; 
+                min-width: 50px; 
+            }
+            .time-val { font-size: 1.3rem; }
+            .time-label { font-size: 0.6rem; }
+            
+            #countdownText {
+                font-size: 0.9rem;
+                margin-bottom: 15px;
+            }
+
+            /* Buttons & Text */
+            .btn { 
+                width: 80%; 
+                padding: 15px 0; 
+                font-size: 1rem; 
+            }
+            
+            .story-word { 
+                font-size: 2rem; 
+                letter-spacing: 2px; 
+            }
+            
+            .unity-text { 
+                font-size: 1.2rem; 
+                line-height: 1.5; 
+                padding-left: 15px;
+                border-left-width: 2px;
+            }
+            
+            .final-wish { font-size: 2rem; }
+        }
+
+        /* Very Small Phones */
+        @media (max-width: 380px) {
+             .year-styled { font-size: 2.8rem; }
+             h1.greeting { font-size: 1.6rem; }
+             .time-box { min-width: 45px; }
+             .time-val { font-size: 1.1rem; }
         }
     </style>
 </head>
@@ -348,7 +413,8 @@
             starCanvas.width = window.innerWidth;
             starCanvas.height = window.innerHeight;
             stars = [];
-            const starCount = isMobile ? 100 : 350;
+            // Reduced star count for mobile performance
+            const starCount = isMobile ? 60 : 350;
             for (let i = 0; i < starCount; i++) {
                 stars.push({
                     x: Math.random() * starCanvas.width,
@@ -393,7 +459,8 @@
         
         let isStoryMode = false;
         let isUnityMode = false;
-        let fireworkFrequency = isMobile ? 0.03 : 0.05;
+        // Reduced frequency for mobile
+        let fireworkFrequency = isMobile ? 0.02 : 0.05;
 
         function resizeFireworks() {
             fWidth = window.innerWidth;
@@ -505,7 +572,8 @@
         }
 
         function createParticles(x, y, colorConfig) {
-            const count = isMobile ? 40 : 100;
+            // Reduced particle count for mobile
+            const count = isMobile ? 25 : 100;
             for (let i = 0; i < count; i++) {
                 particles.push(new Particle(x, y, colorConfig));
             }
@@ -571,7 +639,7 @@
                 
                 // Show Header Text
                 document.querySelector('.year-styled').innerText = "SYSTEM READY";
-                document.querySelector('.year-styled').style.fontSize = "3rem";
+                document.querySelector('.year-styled').style.fontSize = isMobile ? "2.5rem" : "3rem";
                 return;
             }
 
@@ -683,7 +751,7 @@
             `, 7000);
 
             isUnityMode = false;
-            fireworkFrequency = isMobile ? 0.03 : 0.06;
+            fireworkFrequency = isMobile ? 0.02 : 0.06;
             
             // FINAL PAGE
             const finalHTML = `
